@@ -1,0 +1,76 @@
+// dimensions
+const width = 400;
+const height = 400;
+
+// origine
+const ox = width / 2;
+const oy = height / 2;
+
+const scaling = 15;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background(220);
+  draw_spiral();
+}
+
+//paramètres à modifier en commentaire
+
+function draw_spiral() {
+  
+  const N = 4096;                           //2048 ?
+  
+  stroke(0);
+  let ox = width/2;
+  let oy = height/2;
+  
+  let px = ox + f(0) * cos(0);
+  let py = oy + f(0) * sin(0);
+  
+  let start = 0;
+  let end = 12 * PI;                         //18*PI
+  let step = (end - start) / N;
+  
+  for (let i = 1; i < N; i++) {
+    let t = start + i * step;
+    
+    let r = f(t);
+    
+    let x = ox + r * cos(t);
+    let y = oy + r * sin(t);
+    
+    line(px, py, x, y);
+    px = x;
+    py = y;
+  }
+  
+  //deuxième courbe
+  let px_2 = ox + g(0) * cos(0);
+  let py_2 = oy + g(0) * sin(0);
+  
+  for (let i = 1; i < N; i++) {
+    let t = start + i * step;
+    
+    let r_2 = g(t);
+    
+    let x = ox + r_2 * cos(t);
+    let y = oy + r_2 * sin(t);
+    
+    line(px_2, py_2, x, y);
+    px_2 = x;
+    py_2 = y;
+  }
+}
+
+function f(t) {
+  return scaling * (1+t) * (5 + sin(t*30)) / 10 ;    //5+sin(t*30)
+}
+
+function g(t) {
+  return scaling * (1+t) * (6 + sin(t*30)) / 10 ;    //10+sin(t*30)
+}
+
+//éventuellement dupliquer ces courbes encore
