@@ -1,0 +1,77 @@
+// dimensions
+const width = 400;
+const height = 400;
+
+//paramètres de courbes
+let offsets = [5,6,7,8,9,10,11,12];
+let frequences = 30;
+
+//sliders
+let oxslider, oyslider;
+let nbslider;
+let scalingslider;
+//let resslider;
+let endslider;
+
+function setup() {
+  createCanvas(400, 400);
+
+  oxslider = createSlider(width/10, width*1.5, width);
+  oyslider = createSlider(height/10, height*1.5, height);
+  nbslider = createSlider(1,8,5);
+  scalingslider = createSlider(2,20,10);
+  //resslider = createSlider(1024,10240,4096);
+  endslider = createSlider(8*PI, 16*PI, 12*PI);
+
+  oxslider.parent(createDiv('Abscisses'));
+  oyslider.parent(createDiv('Ordonnées'));
+  nbslider.parent(createDiv('Nombre de courbes'));
+  scalingslider.parent(createDiv('Echelle'));
+  //resslider.parent(createDiv('Résolution'));
+  endslider.parent(createDiv('Nombre de tours'));
+}
+
+function draw() {
+  background(220);
+  draw_spiral();
+}
+
+function draw_spiral() {
+
+    const N=4096;
+  
+    stroke(0);
+    
+    let px = oxslider.value() + radius(0) * cos(0);
+    let py = oyslider.value() + radius(0) * sin(0);
+    
+    let start = 0;
+    let end = endslider.value();
+    let step = (end - start) / N;
+
+    // pour chaque courbe
+    for(let j = 0 ; j <nbslider.value() ; ++j) {
+        // pour chaque point de la courbe
+        const r0 = radius(0, offsets[j], frequences);
+        let px = oxslider.value() + r0 * cos(0);
+        let py = oyslider.value() + r0 * sin(0);
+
+        for (let i = 1; i < N ; i++) {
+        const t = start + i * step;
+
+        const r = radius(t, offsets[j], frequences);
+
+        const x = oxslider.value() + r * cos(t);
+        const y = oyslider.value() + r * sin(t);
+
+        line(px, py, x, y);
+        px = x;
+        py = y;
+        }
+    }
+
+}
+
+function radius(t, offset, freq) {
+    return scalingslider.value() * (1+t) * (offset + sin(t*freq)) / 10;
+}
