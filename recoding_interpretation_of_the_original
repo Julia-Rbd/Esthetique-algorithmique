@@ -1,0 +1,60 @@
+// dimensions
+const width = 400;
+const height = 400;
+
+//echelle
+const scaling=10;
+
+//paramètres de courbes
+let offsets = [5,6,7];
+let frequences = 30;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background(220);
+  draw_spiral();
+}
+
+function draw_spiral() {
+  
+    const N = 4096;
+    
+    stroke(0);
+    let ox = width/2;
+    let oy = height/2;
+    
+    let px = ox + radius(0) * cos(0);
+    let py = oy + radius(0) * sin(0);
+    
+    let start = 0;
+    let end = 12*PI;
+    let step = (end - start) / N;
+  
+    // pour chaque courbe
+    for(let j = 0; j < 3; ++j) {
+      // pour chaque point de la courbe
+      const r0 = radius(0, offsets[j], frequences);
+      let px = ox + r0 * cos(0);
+      let py = oy + r0 * sin(0);
+  
+      for (let i = 1; i < N; i++) {
+        const t = start + i * step;
+  
+        const r = radius(t, offsets[j], frequences);
+  
+        const x = ox + r * cos(t);
+        const y = oy + r * sin(t);
+  
+        line(px, py, x, y);
+        px = x;
+        py = y;
+      }
+    }
+  }
+
+function radius(t, offset, freq) {
+    return scaling * (1+t) * (offset + sin(t*freq)) / 10;
+}
