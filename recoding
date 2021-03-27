@@ -2,11 +2,12 @@
 const width = 400;
 const height = 400;
 
-// origine
-const ox = width / 2;
-const oy = height / 2;
+//echelle
+const scaling=10;
 
-const scaling = 15;
+//paramètres de courbes
+let offsets = [5,6,7,8];
+let frequences = 30;
 
 function setup() {
   createCanvas(400, 400);
@@ -17,60 +18,43 @@ function draw() {
   draw_spiral();
 }
 
-//paramètres à modifier en commentaire
-
 function draw_spiral() {
   
-  const N = 4096;                           //2048 ?
-  
-  stroke(0);
-  let ox = width/2;
-  let oy = height/2;
-  
-  let px = ox + f(0) * cos(0);
-  let py = oy + f(0) * sin(0);
-  
-  let start = 0;
-  let end = 12 * PI;                         //18*PI
-  let step = (end - start) / N;
-  
-  for (let i = 1; i < N; i++) {
-    let t = start + i * step;
+    const N = 4096;     //resolution
     
-    let r = f(t);
+    stroke(0);
+    let ox = width;
+    let oy = height;
     
-    let x = ox + r * cos(t);
-    let y = oy + r * sin(t);
+    let px = ox + radius(0) * cos(0);
+    let py = oy + radius(0) * sin(0);
     
-    line(px, py, x, y);
-    px = x;
-    py = y;
+    let start = 0;
+    let end = 12*PI;
+    let step = (end - start) / N;
+  
+    // pour chaque courbe
+    for(let j = 0; j < 4; ++j) {
+      // pour chaque point de la courbe
+      const r0 = radius(0, offsets[j], frequences);
+      let px = ox + r0 * cos(0);
+      let py = oy + r0 * sin(0);
+  
+      for (let i = 1; i < N; i++) {
+        const t = start + i * step;
+  
+        const r = radius(t, offsets[j], frequences);
+  
+        const x = ox + r * cos(t);
+        const y = oy + r * sin(t);
+  
+        line(px, py, x, y);
+        px = x;
+        py = y;
+      }
+    }
   }
-  
-  //deuxième courbe
-  let px_2 = ox + g(0) * cos(0);
-  let py_2 = oy + g(0) * sin(0);
-  
-  for (let i = 1; i < N; i++) {
-    let t = start + i * step;
-    
-    let r_2 = g(t);
-    
-    let x = ox + r_2 * cos(t);
-    let y = oy + r_2 * sin(t);
-    
-    line(px_2, py_2, x, y);
-    px_2 = x;
-    py_2 = y;
-  }
-}
 
-function f(t) {
-  return scaling * (1+t) * (5 + sin(t*30)) / 10 ;    //5+sin(t*30)
+function radius(t, offset, freq) {
+    return scaling * (1+t) * (offset + sin(t*freq)) / 10;
 }
-
-function g(t) {
-  return scaling * (1+t) * (6 + sin(t*30)) / 10 ;    //10+sin(t*30)
-}
-
-//éventuellement dupliquer ces courbes encore
