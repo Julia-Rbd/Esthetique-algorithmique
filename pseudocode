@@ -1,3 +1,5 @@
 draw a square (frame)
 draw a logarithmic sinusoidal function around the bottom right corner (origin)
 duplicate this outline while decreasing the amplitude
+
+As for the interactive version, I added sliders to control differents parameters of the curves.
